@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merced Winter Birds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #E8EEF0;
+  --ink: #14262B;
+  --muted: #4F6368;
+  --line: #C5D1D5;
+  --line-strong: #7D9096;
+  --reed: #3F6B35;
+  --reed-bg: #DCEAD5;
+  --on-reed: #FFFFFF;
+  --water: #1F5568;
+  --field: #F6F9FA;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A1E;
+    --ink: #E4EDEF;
+    --muted: #9DB0B5;
+    --line: #2B4047;
+    --line-strong: #5F777E;
+    --reed: #8DBB78;
+    --reed-bg: #1B3022;
+    --on-reed: #0E1A1E;
+    --water: #8CC3D6;
+    --field: #15262C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1A1E;
+  --ink: #E4EDEF;
+  --muted: #9DB0B5;
+  --line: #2B4047;
+  --line-strong: #5F777E;
+  --reed: #8DBB78;
+  --reed-bg: #1B3022;
+  --on-reed: #0E1A1E;
+  --water: #8CC3D6;
+  --field: #15262C;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 10;
+}
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; }
+
+.top { padding: 28px 0 8px; }
+h1 {
+  margin: 0 0 6px;
+  font-family: Spectral, Georgia, serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.sub { margin: 0; color: var(--muted); max-width: 34em; }
+.prog { margin: 18px 0 0; }
+.prog-row { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; }
+.prog-row b { font-weight: 700; }
+.prog-row span:last-child { color: var(--muted); text-align: right; }
+.track { height: 6px; margin-top: 8px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--reed); transition: width .25s ease; }
+
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 11;
+  background: var(--bg);
+  padding: 10px 0;
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+input[type="search"] {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 2px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--field);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="search"]::placeholder { color: var(--muted); }
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--line-strong);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.chip .n { color: var(--muted); font-size: 14px; }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .8; }
+.place-note { margin: 2px 0 8px; min-height: 1.55em; font-size: 14px; color: var(--muted); }
+
+.pips { display: inline-flex; gap: 3px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; }
+.pip.on { background: currentColor; }
+
+.list { border-top: 1px solid var(--line); }
+.row { border-bottom: 1px solid var(--line); border-left: 4px solid transparent; padding-left: 8px; }
+.row.seen { background: var(--reed-bg); border-left-color: var(--reed); }
+.head { display: flex; align-items: stretch; }
+.tick {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 44px; height: 44px;
+  margin: 6px 4px 6px 0;
+  display: grid; place-items: center;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.tick[aria-pressed="true"] { background: var(--reed); border-color: var(--reed); color: var(--on-reed); }
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 12px;
+  align-items: center;
+  text-align: left;
+  padding: 8px 8px 8px 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.nm { font-family: Spectral, serif; font-weight: 600; font-size: 20px; line-height: 1.25; }
+.meta { grid-column: 1; font-size: 14px; color: var(--muted); line-height: 1.4; }
+.rate { grid-row: 1 / span 2; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: 14px; color: var(--muted); }
+.rate .pips { color: var(--ink); }
+.more { padding: 0 8px 16px 56px; }
+.more[hidden] { display: none; }
+.more p { margin: 0 0 8px; max-width: 34em; }
+.where { color: var(--muted); font-size: 14px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.links a {
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--water);
+  border-radius: 22px;
+  color: var(--water);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.empty { padding: 32px 4px; color: var(--muted); }
+.empty button { margin-top: 12px; }
+.btn {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--line-strong);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+footer { margin-top: 28px; color: var(--muted); font-size: 14px; }
+footer p { margin: 0 0 10px; max-width: 36em; }
+
+:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+@media (min-width: 560px) { h1 { font-size: 38px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Merced Winter Birds</h1>
+    <p class="sub" id="sub"></p>
+    <div class="prog" aria-live="polite">
+      <div class="prog-row"><span id="p-seen"></span><span id="p-life"></span></div>
+      <div class="track"><div class="fill" id="p-fill"></div></div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <label class="sr" for="q">Search by bird name, group or place</label>
+    <input id="q" type="search" placeholder="Search, e.g. goose, raptor, farm roads" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false">
+  </div>
+
+  <div class="chips" id="chips-place" role="group" aria-label="Filter by place"></div>
+  <p class="place-note" id="place-note"></p>
+  <div class="chips" id="chips-tier" role="group" aria-label="Filter by odds"></div>
+
+  <main class="list" id="list"></main>
+
+  <footer>
+    <p>Frequencies come from eBird records for Merced County in November–December. They cover the whole county, not just the refuges. Places and ID tips are guidance only; birds move, so go by what you see in the field and by recent eBird reports.</p>
+    <p>Photo links need a connection. Signal on the refuges is patchy, so open the ones you want ahead of time. Your “seen” marks are saved only in this browser on this phone.</p>
+    <button class="btn" id="reset" type="button">Clear all seen marks</button>
+  </footer>
+</div>
+
+<script>
+var BIRDS = [{"n": "American Kestrel", "f": 52.63, "t": "A", "c": "Raptor", "p": ["F", "M", "S"], "tip": "The most common small falcon on wires, fences and poles. Drive the farm roads and the tour route slowly and scan the wires.", "mac": "https://media.ebird.org/catalog?taxonCode=amekes&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Kestrel%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Kestrel"}, {"n": "Northern Mockingbird", "f": 41.27, "t": "A", "c": "Passerine", "p": ["F", "M"], "tip": "Gray and white, with big white wing patches in flight. Often perched on a shrub top or a wire. Farm roads and the bushes near the refuge entrance both work, and it is easy around the Bay Area too.", "mac": "https://media.ebird.org/catalog?taxonCode=normoc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Northern%20Mockingbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Northern_Mockingbird"}, {"n": "Loggerhead Shrike", "f": 39.81, "t": "A", "c": "Passerine", "p": ["M", "F"], "tip": "Perches on fences, wires or shrub tops, watching the ground. Black mask and a hooked bill. Scan both the tour route and the farm roads.", "mac": "https://media.ebird.org/catalog?taxonCode=logshr&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Loggerhead%20Shrike%20bird", "aab": "https://www.allaboutbirds.org/guide/Loggerhead_Shrike"}, {"n": "Sandhill Crane", "f": 37.7, "t": "A", "c": "Crane", "p": ["M", "S"], "tip": "The star of the trip. The dawn fly-out and the dusk fly-in are the spectacle; by day they feed in nearby fields. Very loud, so you often hear them before you see them.", "mac": "https://media.ebird.org/catalog?taxonCode=sancra&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sandhill%20Crane%20bird", "aab": "https://www.allaboutbirds.org/guide/Sandhill_Crane"}, {"n": "Greater White-fronted Goose", "f": 34.23, "t": "A", "c": "Waterfowl", "p": ["M", "S"], "tip": "Mixed in with the Snow Geese or on the ponds. Browner and grayer than a Snow Goose, with a white patch at the base of the bill and black bars on the belly of adults.", "mac": "https://media.ebird.org/catalog?taxonCode=gwfgoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Greater%20White-fronted%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Greater_White-fronted_Goose"}, {"n": "Wilson’s Snipe", "f": 30.55, "t": "A", "c": "Shorebird", "p": ["M", "S"], "tip": "Half-hidden along muddy edges and reeds, with a long bill and a striped head. Check below the entrance viewing platform when there is enough water, and scan slowly.", "mac": "https://media.ebird.org/catalog?taxonCode=wilsni1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Wilson%27s%20Snipe%20bird", "aab": "https://www.allaboutbirds.org/guide/Wilsons_Snipe"}, {"n": "Snow Goose", "f": 28.69, "t": "A", "c": "Waterfowl", "p": ["M", "S"], "tip": "Numbers are close to peak in December, and a dawn blast-off of a big flock is the show. White body, black wingtips, pink bill.", "mac": "https://media.ebird.org/catalog?taxonCode=snogoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Snow%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Snow_Goose"}, {"n": "American Herring Gull", "f": 18.81, "t": "B", "c": "Gull", "p": ["O"], "tip": "More reliable on the coast and at landfills, not a main refuge bird. Best picked up at Half Moon Bay.", "mac": "https://media.ebird.org/catalog?taxonCode=amhgul1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Herring%20Gull%20bird", "aab": "https://www.allaboutbirds.org/guide/Herring_Gull"}, {"n": "Sora", "f": 18.15, "t": "B", "c": "Rail", "p": ["M", "S"], "tip": "A small rail with a short yellow bill that stays at the reed edges. May show up below the entrance platform when the water is high enough. Needs patience.", "mac": "https://media.ebird.org/catalog?taxonCode=sora&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sora%20bird", "aab": "https://www.allaboutbirds.org/guide/Sora"}, {"n": "Ross’s Goose", "f": 17.39, "t": "B", "c": "Waterfowl", "p": ["M", "S"], "tip": "Look through the Snow Goose flocks for smaller birds with a shorter bill and no black “grin patch” at the base of the bill. Photograph and zoom in to compare.", "mac": "https://media.ebird.org/catalog?taxonCode=rosgoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ross%27s%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Rosss_Goose"}, {"n": "American Goldfinch", "f": 15.1, "t": "B", "c": "Passerine", "p": ["M", "F"], "tip": "Duller in winter, usually in small flocks in trees and field edges. Easy around the Bay Area too, so no need to make a special trip.", "mac": "https://media.ebird.org/catalog?taxonCode=amegfi&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Goldfinch%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Goldfinch"}, {"n": "Lincoln’s Sparrow", "f": 14.53, "t": "B", "c": "Passerine", "p": ["M"], "tip": "Finely streaked breast, gray-brown overall. Skulks in shrubs and wet grass around the second viewing platform. Stand quietly and wait for it to come out.", "mac": "https://media.ebird.org/catalog?taxonCode=linspa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Lincoln%27s%20Sparrow%20bird", "aab": "https://www.allaboutbirds.org/guide/Lincolns_Sparrow"}, {"n": "Ring-necked Duck", "f": 8.88, "t": "B", "c": "Waterfowl", "p": ["S", "M"], "tip": "Dark back and a white ring on the bill. The ponds along the San Luis NWR waterfowl route are your best chance.", "mac": "https://media.ebird.org/catalog?taxonCode=rinduc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ring-necked%20Duck%20bird", "aab": "https://www.allaboutbirds.org/guide/Ring-necked_Duck"}, {"n": "Tundra Swan", "f": 7.42, "t": "B", "c": "Waterfowl", "p": ["S", "M"], "tip": "Doesn’t show up until December, and numbers are small. Mostly at Sousa Marsh in San Luis NWR, occasionally at Merced.", "mac": "https://media.ebird.org/catalog?taxonCode=tunswa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Tundra%20Swan%20bird", "aab": "https://www.allaboutbirds.org/guide/Tundra_Swan"}, {"n": "Blue-winged Teal", "f": 7.02, "t": "B", "c": "Waterfowl", "p": ["S", "M"], "tip": "Mixed into duck flocks on shallow ponds; males have a white crescent on the face. Scarce in winter, so scan carefully.", "mac": "https://media.ebird.org/catalog?taxonCode=buwtea&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Blue-winged%20Teal%20bird", "aab": "https://www.allaboutbirds.org/guide/Blue-winged_Teal"}, {"n": "Common Goldeneye", "f": 6.87, "t": "B", "c": "Waterfowl", "p": ["S"], "tip": "Likes deeper water. A chance at San Luis, and Lake Merritt is also a good place.", "mac": "https://media.ebird.org/catalog?taxonCode=comgol&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Common%20Goldeneye%20bird", "aab": "https://www.allaboutbirds.org/guide/Common_Goldeneye"}, {"n": "Merlin", "f": 6.62, "t": "B", "c": "Raptor", "p": ["M", "S", "F"], "tip": "A chance encounter with a small falcon that flies fast and straight. Often perched on a treetop or utility pole.", "mac": "https://media.ebird.org/catalog?taxonCode=merlin&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Merlin%20bird", "aab": "https://www.allaboutbirds.org/guide/Merlin"}, {"n": "Tricolored Blackbird", "f": 5.86, "t": "B", "c": "Passerine", "p": ["F"], "tip": "Large winter flocks in fields and pastures. Males have a broad white edge on the shoulder, unlike the red shoulder of a Red-winged Blackbird.", "mac": "https://media.ebird.org/catalog?taxonCode=tribla&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Tricolored%20Blackbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Tricolored_Blackbird"}, {"n": "Western Cattle-Egret", "f": 5.67, "t": "B", "c": "Heron/egret", "p": ["F"], "tip": "Look at the feet of cattle in pastures. Check the pastures along Sandy Mush Road.", "mac": "https://media.ebird.org/catalog?taxonCode=categr1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Western%20Cattle-Egret%20bird", "aab": "https://www.allaboutbirds.org/guide/Cattle_Egret"}, {"n": "Horned Lark", "f": 5.52, "t": "B", "c": "Passerine", "p": ["F", "M"], "tip": "On bare ground, gravel roads and fallow fields. Yellow face, with little “horns” on each side of the crown.", "mac": "https://media.ebird.org/catalog?taxonCode=horlar&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Horned%20Lark%20bird", "aab": "https://www.allaboutbirds.org/guide/Horned_Lark"}, {"n": "Lark Sparrow", "f": 4.89, "t": "C", "c": "Passerine", "p": ["F"], "tip": "On roadside shrubs and wires. Chestnut face pattern and white edges on the tail. Scarce in winter.", "mac": "https://media.ebird.org/catalog?taxonCode=larspa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Lark%20Sparrow%20bird", "aab": "https://www.allaboutbirds.org/guide/Lark_Sparrow"}, {"n": "Vermilion Flycatcher", "f": 4.4, "t": "C", "c": "Passerine", "p": ["O"], "tip": "Males are brilliant red. Scattered winter records with no fixed spot, so check recent eBird reports before you go.", "mac": "https://media.ebird.org/catalog?taxonCode=verfly&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Vermilion%20Flycatcher%20bird", "aab": "https://www.allaboutbirds.org/guide/Vermilion_Flycatcher"}, {"n": "Yellow-billed Magpie", "f": 4.36, "t": "C", "c": "Passerine", "p": ["F"], "tip": "A Central Valley endemic. Look for oaks and wires along the farm roads; the yellow bill is easy to spot.", "mac": "https://media.ebird.org/catalog?taxonCode=yebmag&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Yellow-billed%20Magpie%20bird", "aab": "https://www.allaboutbirds.org/guide/Yellow-billed_Magpie"}, {"n": "Sharp-shinned Hawk", "f": 4.17, "t": "C", "c": "Raptor", "p": ["M", "S"], "tip": "A chance encounter. Small, with a long, square-tipped tail, often darting out from woodland edges.", "mac": "https://media.ebird.org/catalog?taxonCode=shshaw&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sharp-shinned%20Hawk%20bird", "aab": "https://www.allaboutbirds.org/guide/Sharp-shinned_Hawk"}, {"n": "Ferruginous Hawk", "f": 3.96, "t": "C", "c": "Raptor", "p": ["F", "M"], "tip": "Look in open grassland and on utility poles. Pale underparts and rusty “trousers” on the legs; very striking in flight.", "mac": "https://media.ebird.org/catalog?taxonCode=ferhaw&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ferruginous%20Hawk%20bird", "aab": "https://www.allaboutbirds.org/guide/Ferruginous_Hawk"}, {"n": "Common Merganser", "f": 3.94, "t": "C", "c": "Waterfowl", "p": ["O"], "tip": "Prefers larger bodies of water. Unreliable here; Lake Merritt is a better bet.", "mac": "https://media.ebird.org/catalog?taxonCode=commer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Common%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Common_Merganser"}, {"n": "Wood Duck", "f": 3.85, "t": "C", "c": "Waterfowl", "p": ["S"], "tip": "At wooded ponds. A better chance at San Luis NWR, and the males are spectacularly colorful.", "mac": "https://media.ebird.org/catalog?taxonCode=wooduc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Wood%20Duck%20bird", "aab": "https://www.allaboutbirds.org/guide/Wood_Duck"}, {"n": "Phainopepla", "f": 3.13, "t": "C", "c": "Passerine", "p": ["O"], "tip": "The glossy black crest is distinctive. More of a foothill scrub bird and not a refuge target; treat it as a chance encounter.", "mac": "https://media.ebird.org/catalog?taxonCode=phaino&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Phainopepla%20bird", "aab": "https://www.allaboutbirds.org/guide/Phainopepla"}, {"n": "Golden Eagle", "f": 3.03, "t": "C", "c": "Raptor", "p": ["M", "F"], "tip": "Soaring over open grassland. Fairly scarce, so luck plays a big part.", "mac": "https://media.ebird.org/catalog?taxonCode=goleag&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Golden%20Eagle%20bird", "aab": "https://www.allaboutbirds.org/guide/Golden_Eagle"}, {"n": "Cedar Waxwing", "f": 2.86, "t": "C", "c": "Passerine", "p": ["O"], "tip": "Moves in flocks through fruit trees and shrubs. Easy around the Bay Area too, so no special trip needed.", "mac": "https://media.ebird.org/catalog?taxonCode=cedwax&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Cedar%20Waxwing%20bird", "aab": "https://www.allaboutbirds.org/guide/Cedar_Waxwing"}, {"n": "American Bittern", "f": 2.52, "t": "C", "c": "Heron/egret", "p": ["M", "S"], "tip": "Hides in the reeds and often stands motionless. Be patient around the entrance viewing platform.", "mac": "https://media.ebird.org/catalog?taxonCode=amebit&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Bittern%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Bittern"}, {"n": "Prairie Falcon", "f": 2.43, "t": "C", "c": "Raptor", "p": ["F", "M"], "tip": "Look in open grassland and on utility poles. Pale brown, with black patches in the “armpits” in flight.", "mac": "https://media.ebird.org/catalog?taxonCode=prafal&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Prairie%20Falcon%20bird", "aab": "https://www.allaboutbirds.org/guide/Prairie_Falcon"}, {"n": "Redhead", "f": 2.26, "t": "C", "c": "Waterfowl", "p": ["S"], "tip": "On deeper ponds, mixed with other diving ducks. Males have a red head and a blue-gray bill.", "mac": "https://media.ebird.org/catalog?taxonCode=redhea&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Redhead%20bird", "aab": "https://www.allaboutbirds.org/guide/Redhead"}, {"n": "American Barn Owl", "f": 2.01, "t": "C", "c": "Owl", "p": ["O"], "tip": "Nocturnal. You usually need to stake out a spot at dusk, so it isn’t a target for this trip.", "mac": "https://media.ebird.org/catalog?taxonCode=brnowl&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Barn%20Owl%20bird", "aab": "https://www.allaboutbirds.org/guide/Barn_Owl"}, {"n": "Rock Wren", "f": 1.93, "t": "C", "c": "Passerine", "p": ["O"], "tip": "Lives on rocky slopes. Not a refuge target; a backup if you happen across one.", "mac": "https://media.ebird.org/catalog?taxonCode=rocwre&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Rock%20Wren%20bird", "aab": "https://www.allaboutbirds.org/guide/Rock_Wren"}, {"n": "Red-breasted Sapsucker", "f": 1.59, "t": "C", "c": "Woodpecker", "p": ["O"], "tip": "Turns up occasionally in oak woodland; a backup if you happen across one.", "mac": "https://media.ebird.org/catalog?taxonCode=rebsap&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Red-breasted%20Sapsucker%20bird", "aab": "https://www.allaboutbirds.org/guide/Red-breasted_Sapsucker"}, {"n": "Hooded Merganser", "f": 1.5, "t": "C", "c": "Waterfowl", "p": ["S", "O"], "tip": "Likes small ponds. A chance at San Luis, and at Lake Merritt too.", "mac": "https://media.ebird.org/catalog?taxonCode=hoomer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Hooded%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Hooded_Merganser"}, {"n": "Green Heron", "f": 1.37, "t": "C", "c": "Heron/egret", "p": ["S"], "tip": "In waterside vegetation, often standing still. Check the pond edges at San Luis NWR.", "mac": "https://media.ebird.org/catalog?taxonCode=grnher&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Green%20Heron%20bird", "aab": "https://www.allaboutbirds.org/guide/Green_Heron"}, {"n": "Red-breasted Merganser", "f": 1.14, "t": "C", "c": "Waterfowl", "p": ["O"], "tip": "More reliable on the coast and in estuaries. Best picked up at Half Moon Bay.", "mac": "https://media.ebird.org/catalog?taxonCode=rebmer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Red-breasted%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Red-breasted_Merganser"}, {"n": "Yellow-headed Blackbird", "f": 1.08, "t": "C", "c": "Passerine", "p": ["F"], "tip": "Often mixed into big blackbird flocks, with a bright yellow head. Scan the large flocks in the fields.", "mac": "https://media.ebird.org/catalog?taxonCode=yehbla&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Yellow-headed%20Blackbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Yellow-headed_Blackbird"}, {"n": "Cassin’s Kingbird", "f": 1.06, "t": "C", "c": "Passerine", "p": ["O"], "tip": "Rare in winter; a long shot.", "mac": "https://media.ebird.org/catalog?taxonCode=caskin&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Cassin%27s%20Kingbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Cassins_Kingbird"}];
+var BASE = 169;
+var LS_KEY = "merced-seen-v1";
+
+var PLACES = {
+  M: { label: "Merced NWR", note: "Sandy Mush Road entrance: viewing platforms, the 5-mile auto tour route, and the second platform." },
+  S: { label: "San Luis NWR", note: "North of Los Banos: the waterfowl route, the tule elk route and Sousa Marsh." },
+  F: { label: "Farm roads", note: "Public roads around Sandy Mush Rd and Henry Miller Rd. Stay out of private land." },
+  O: { label: "Elsewhere", note: "Birds that are hard to find on the refuges and easier to get around the Bay Area or on the coast." }
+};
+var TIERS = {
+  A: { label: "Very likely", pips: 3 },
+  B: { label: "Likely", pips: 2 },
+  C: { label: "Possible", pips: 1 }
+};
+
+var seen = new Set();
+try {
+  var raw = localStorage.getItem(LS_KEY);
+  if (raw) { JSON.parse(raw).forEach(function (n) { seen.add(n); }); }
+} catch (e) {}
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(Array.from(seen))); } catch (e) {}
+}
+
+var state = { q: "", place: "all", tier: "all", unseen: false, open: null };
+
+function norm(s) { return s.toLowerCase().replace(/[’']/g, "").replace(/[-\/,.;]/g, " ").replace(/\s+/g, " ").trim(); }
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+BIRDS.forEach(function (b) {
+  b.hay = norm([b.n, b.c, b.tip, b.p.map(function (k) { return PLACES[k].label; }).join(" ")].join(" "));
+});
+
+function pipsHtml(t) {
+  var n = TIERS[t].pips, h = '<span class="pips" role="img" aria-label="Odds: ' + TIERS[t].label + '">';
+  for (var i = 0; i < 3; i++) h += '<span class="pip' + (i < n ? " on" : "") + '"></span>';
+  return h + "</span>";
+}
+
+function matches(b) {
+  if (state.place !== "all" && b.p.indexOf(state.place) === -1) return false;
+  if (state.tier !== "all" && b.t !== state.tier) return false;
+  if (state.unseen && seen.has(b.n)) return false;
+  if (state.q) {
+    var toks = norm(state.q).split(/\s+/).filter(Boolean);
+    for (var i = 0; i < toks.length; i++) if ((" " + b.hay).indexOf(" " + toks[i]) === -1) return false;
+  }
+  return true;
+}
+
+function renderChips() {
+  var total = BIRDS.length;
+  var ph = '<button type="button" class="chip" data-place="all" aria-pressed="' + (state.place === "all") + '">All <span class="n">' + total + "</span></button>";
+  ["M", "S", "F", "O"].forEach(function (k) {
+    var n = BIRDS.filter(function (b) { return b.p.indexOf(k) !== -1; }).length;
+    ph += '<button type="button" class="chip" data-place="' + k + '" aria-pressed="' + (state.place === k) + '">' + esc(PLACES[k].label) + ' <span class="n">' + n + "</span></button>";
+  });
+  document.getElementById("chips-place").innerHTML = ph;
+
+  var th = '<button type="button" class="chip" data-tier="all" aria-pressed="' + (state.tier === "all") + '">Any odds</button>';
+  ["A", "B", "C"].forEach(function (k) {
+    var n = BIRDS.filter(function (b) { return b.t === k; }).length;
+    th += '<button type="button" class="chip" data-tier="' + k + '" aria-pressed="' + (state.tier === k) + '">' + pipsHtml(k) + TIERS[k].label + ' <span class="n">' + n + "</span></button>";
+  });
+  th += '<button type="button" class="chip" data-unseen="1" aria-pressed="' + state.unseen + '">Unseen only</button>';
+  document.getElementById("chips-tier").innerHTML = th;
+
+  document.getElementById("place-note").textContent = state.place === "all" ? "" : PLACES[state.place].note;
+}
+
+function renderProgress() {
+  var n = BIRDS.filter(function (b) { return seen.has(b.n); }).length;
+  document.getElementById("p-seen").innerHTML = "Seen <b>" + n + "</b> / " + BIRDS.length;
+  document.getElementById("p-life").textContent = "life list " + BASE + " → " + (BASE + n);
+  document.getElementById("p-fill").style.width = (BIRDS.length ? (n / BIRDS.length) * 100 : 0) + "%";
+}
+
+function renderList() {
+  var list = BIRDS.filter(matches);
+  var el = document.getElementById("list");
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">No matching birds. Try part of an English name, or clear the filters.<br><button type="button" class="btn" data-clear="1">Clear search and filters</button></div>';
+    return;
+  }
+  var h = "";
+  list.forEach(function (b, idx) {
+    var isSeen = seen.has(b.n), isOpen = state.open === b.n, id = "m" + BIRDS.indexOf(b);
+    var where = b.p.map(function (k) { return PLACES[k].label; }).join(", ");
+    h += '<article class="row' + (isSeen ? " seen" : "") + '">' +
+      '<div class="head">' +
+      '<button type="button" class="tick" data-tick="' + esc(b.n) + '" aria-pressed="' + isSeen + '" aria-label="Mark seen: ' + esc(b.n) + '">' +
+      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<button type="button" class="main" data-open="' + esc(b.n) + '" aria-expanded="' + isOpen + '" aria-controls="' + id + '">' +
+      '<span class="nm">' + esc(b.n) + "</span>" +
+      '<span class="meta">' + esc(b.c) + "; " + esc(where) + "</span>" +
+      '<span class="rate">' + pipsHtml(b.t) + "<span>" + b.f.toFixed(1) + "%</span></span>" +
+      "</button></div>" +
+      '<div class="more" id="' + id + '"' + (isOpen ? "" : " hidden") + ">" +
+      "<p>" + esc(b.tip) + "</p>" +
+      '<p class="where">Where to look: ' + esc(where) + "</p>" +
+      '<div class="links">' +
+      '<a href="' + esc(b.mac) + '" target="_blank" rel="noopener noreferrer">eBird photos</a>' +
+      '<a href="' + esc(b.g) + '" target="_blank" rel="noopener noreferrer">Google Images</a>' +
+      '<a href="' + esc(b.aab) + '" target="_blank" rel="noopener noreferrer">All About Birds</a>' +
+      "</div></div></article>";
+  });
+  el.innerHTML = h;
+}
+
+function renderAll() { renderChips(); renderProgress(); renderList(); }
+
+document.getElementById("sub").textContent = "The " + BIRDS.length + " birds not yet on your life list that you have a shot at around Merced this winter. Built for Dec 21–22.";
+
+document.getElementById("q").addEventListener("input", function (e) {
+  state.q = e.target.value;
+  renderList();
+});
+
+document.addEventListener("click", function (e) {
+  var t = e.target.closest("button");
+  if (!t) return;
+  if (t.hasAttribute("data-tick")) {
+    var n = t.getAttribute("data-tick");
+    if (seen.has(n)) seen.delete(n); else seen.add(n);
+    save(); renderProgress(); renderList();
+  } else if (t.hasAttribute("data-open")) {
+    var o = t.getAttribute("data-open");
+    state.open = state.open === o ? null : o;
+    renderList();
+  } else if (t.hasAttribute("data-place")) {
+    state.place = t.getAttribute("data-place"); state.open = null; renderChips(); renderList();
+  } else if (t.hasAttribute("data-tier")) {
+    state.tier = t.getAttribute("data-tier"); state.open = null; renderChips(); renderList();
+  } else if (t.hasAttribute("data-unseen")) {
+    state.unseen = !state.unseen; renderChips(); renderList();
+  } else if (t.hasAttribute("data-clear")) {
+    state.q = ""; state.place = "all"; state.tier = "all"; state.unseen = false; state.open = null;
+    document.getElementById("q").value = "";
+    renderAll();
+  }
+});
+
+var resetBtn = document.getElementById("reset"), resetTimer = null;
+resetBtn.addEventListener("click", function () {
+  if (resetBtn.getAttribute("data-armed") === "1") {
+    seen.clear(); save();
+    resetBtn.removeAttribute("data-armed");
+    resetBtn.textContent = "Clear all seen marks";
+    clearTimeout(resetTimer);
+    renderProgress(); renderList();
+  } else {
+    resetBtn.setAttribute("data-armed", "1");
+    resetBtn.textContent = "Tap again to confirm";
+    resetTimer = setTimeout(function () {
+      resetBtn.removeAttribute("data-armed");
+      resetBtn.textContent = "Clear all seen marks";
+    }, 4000);
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>

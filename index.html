@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merced 冬季鸟种</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #E8EEF0;
+  --ink: #14262B;
+  --muted: #4F6368;
+  --line: #C5D1D5;
+  --line-strong: #7D9096;
+  --reed: #3F6B35;
+  --reed-bg: #DCEAD5;
+  --on-reed: #FFFFFF;
+  --water: #1F5568;
+  --field: #F6F9FA;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A1E;
+    --ink: #E4EDEF;
+    --muted: #9DB0B5;
+    --line: #2B4047;
+    --line-strong: #5F777E;
+    --reed: #8DBB78;
+    --reed-bg: #1B3022;
+    --on-reed: #0E1A1E;
+    --water: #8CC3D6;
+    --field: #15262C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1A1E;
+  --ink: #E4EDEF;
+  --muted: #9DB0B5;
+  --line: #2B4047;
+  --line-strong: #5F777E;
+  --reed: #8DBB78;
+  --reed-bg: #1B3022;
+  --on-reed: #0E1A1E;
+  --water: #8CC3D6;
+  --field: #15262C;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 10;
+}
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; }
+
+.top { padding: 28px 0 8px; }
+h1 {
+  margin: 0 0 6px;
+  font-family: Spectral, "Songti SC", "Noto Serif SC", serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.sub { margin: 0; color: var(--muted); max-width: 34em; }
+.prog { margin: 18px 0 0; }
+.prog-row { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; }
+.prog-row b { font-weight: 700; }
+.prog-row span:last-child { color: var(--muted); text-align: right; }
+.track { height: 6px; margin-top: 8px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--reed); transition: width .25s ease; }
+
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 11;
+  background: var(--bg);
+  padding: 10px 0;
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+input[type="search"] {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 2px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--field);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="search"]::placeholder { color: var(--muted); }
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--line-strong);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.chip .n { color: var(--muted); font-size: 14px; }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .8; }
+.place-note { margin: 2px 0 8px; min-height: 1.55em; font-size: 14px; color: var(--muted); }
+
+.pips { display: inline-flex; gap: 3px; align-items: center; }
+.pip { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; }
+.pip.on { background: currentColor; }
+
+.list { border-top: 1px solid var(--line); }
+.row { border-bottom: 1px solid var(--line); border-left: 4px solid transparent; padding-left: 8px; }
+.row.seen { background: var(--reed-bg); border-left-color: var(--reed); }
+.head { display: flex; align-items: stretch; }
+.tick {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 44px; height: 44px;
+  margin: 6px 4px 6px 0;
+  display: grid; place-items: center;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.tick[aria-pressed="true"] { background: var(--reed); border-color: var(--reed); color: var(--on-reed); }
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 12px;
+  align-items: center;
+  text-align: left;
+  padding: 8px 8px 8px 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.nm { font-family: Spectral, serif; font-weight: 600; font-size: 20px; line-height: 1.25; }
+.meta { grid-column: 1; font-size: 14px; color: var(--muted); line-height: 1.4; }
+.rate { grid-row: 1 / span 2; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: 14px; color: var(--muted); }
+.rate .pips { color: var(--ink); }
+.more { padding: 0 8px 16px 56px; }
+.more[hidden] { display: none; }
+.more p { margin: 0 0 8px; max-width: 34em; }
+.where { color: var(--muted); font-size: 14px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.links a {
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--water);
+  border-radius: 22px;
+  color: var(--water);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.empty { padding: 32px 4px; color: var(--muted); }
+.empty button { margin-top: 12px; }
+.btn {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--line-strong);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+footer { margin-top: 28px; color: var(--muted); font-size: 14px; }
+footer p { margin: 0 0 10px; max-width: 36em; }
+
+:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+@media (min-width: 560px) { h1 { font-size: 38px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Merced 冬季鸟种</h1>
+    <p class="sub" id="sub"></p>
+    <div class="prog" aria-live="polite">
+      <div class="prog-row"><span id="p-seen"></span><span id="p-life"></span></div>
+      <div class="track"><div class="fill" id="p-fill"></div></div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <label class="sr" for="q">搜索鸟名、类别或地点</label>
+    <input id="q" type="search" placeholder="搜索，例如 goose、猛禽、农田路" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false">
+  </div>
+
+  <div class="chips" id="chips-place" role="group" aria-label="按地点筛选"></div>
+  <p class="place-note" id="place-note"></p>
+  <div class="chips" id="chips-tier" role="group" aria-label="按把握筛选"></div>
+
+  <main class="list" id="list"></main>
+
+  <footer>
+    <p>出现频率来自 Merced County 11–12 月的 eBird 记录，是整个县的数字，不只是保护区。地点和辨认提示是参考，鸟会移动，以现场和 eBird 的近期报告为准。</p>
+    <p>照片链接需要联网。保护区里信号不稳，出发前先打开想看的几种会省事。“已见”只保存在这个手机的这个浏览器里。</p>
+    <button class="btn" id="reset" type="button">清除全部已见记录</button>
+  </footer>
+</div>
+
+<script>
+var BIRDS = [{"n": "American Kestrel", "f": 52.63, "t": "A", "c": "猛禽", "p": ["F", "M", "S"], "tip": "电线、栅栏和电线杆上最常见的小隼。沿农田路和自驾路线慢慢开，边开边扫电线。", "mac": "https://media.ebird.org/catalog?taxonCode=amekes&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Kestrel%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Kestrel"}, {"n": "Northern Mockingbird", "f": 41.27, "t": "A", "c": "雀形目", "p": ["F", "M"], "tip": "灰白色，飞起来翅上有白斑，常站在灌木顶或电线上。农田路和保护区入口的灌丛都有机会，湾区也能补。", "mac": "https://media.ebird.org/catalog?taxonCode=normoc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Northern%20Mockingbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Northern_Mockingbird"}, {"n": "Loggerhead Shrike", "f": 39.81, "t": "A", "c": "雀形目", "p": ["M", "F"], "tip": "站在栅栏、电线或灌木顶上盯着地面。黑色过眼纹像蒙面，嘴端有钩。自驾路线和农田路都扫一遍。", "mac": "https://media.ebird.org/catalog?taxonCode=logshr&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Loggerhead%20Shrike%20bird", "aab": "https://www.allaboutbirds.org/guide/Loggerhead_Shrike"}, {"n": "Sandhill Crane", "f": 37.7, "t": "A", "c": "涉禽", "p": ["M", "S"], "tip": "本行主角。清晨起飞、傍晚归巢最壮观，白天在附近的田里觅食。叫声很大，常常先听到再看到。", "mac": "https://media.ebird.org/catalog?taxonCode=sancra&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sandhill%20Crane%20bird", "aab": "https://www.allaboutbirds.org/guide/Sandhill_Crane"}, {"n": "Greater White-fronted Goose", "f": 34.23, "t": "A", "c": "雁鸭", "p": ["M", "S"], "tip": "混在雪雁群或池塘里。比雪雁更灰褐，成鸟嘴基有一圈白，腹部有黑色斑块。", "mac": "https://media.ebird.org/catalog?taxonCode=gwfgoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Greater%20White-fronted%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Greater_White-fronted_Goose"}, {"n": "Wilson’s Snipe", "f": 30.55, "t": "A", "c": "鸻鹬", "p": ["M", "S"], "tip": "在泥地和芦苇边缘半隐半现，长嘴，头上有条纹。入口观景台下方水够时可能看到，需要慢慢扫。", "mac": "https://media.ebird.org/catalog?taxonCode=wilsni1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Wilson%27s%20Snipe%20bird", "aab": "https://www.allaboutbirds.org/guide/Wilsons_Snipe"}, {"n": "Snow Goose", "f": 28.69, "t": "A", "c": "雁鸭", "p": ["M", "S"], "tip": "12 月数量接近高峰，清晨大群炸飞最好看。白色身体、黑色翼尖、粉色嘴。", "mac": "https://media.ebird.org/catalog?taxonCode=snogoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Snow%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Snow_Goose"}, {"n": "American Herring Gull", "f": 18.81, "t": "B", "c": "鸥类", "p": ["O"], "tip": "海岸和垃圾场更稳，保护区不是主要地点。建议在 Half Moon Bay 补。", "mac": "https://media.ebird.org/catalog?taxonCode=amhgul1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Herring%20Gull%20bird", "aab": "https://www.allaboutbirds.org/guide/Herring_Gull"}, {"n": "Sora", "f": 18.15, "t": "B", "c": "秧鸡", "p": ["M", "S"], "tip": "短黄嘴的小秧鸡，躲在芦苇边。入口观景台下方水够时可能出现，需要耐心等。", "mac": "https://media.ebird.org/catalog?taxonCode=sora&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sora%20bird", "aab": "https://www.allaboutbirds.org/guide/Sora"}, {"n": "Ross’s Goose", "f": 17.39, "t": "B", "c": "雁鸭", "p": ["M", "S"], "tip": "在雪雁群里筛：体型更小、嘴更短，嘴基没有黑色“笑纹”。拍下来再放大对比。", "mac": "https://media.ebird.org/catalog?taxonCode=rosgoo&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ross%27s%20Goose%20bird", "aab": "https://www.allaboutbirds.org/guide/Rosss_Goose"}, {"n": "American Goldfinch", "f": 15.1, "t": "B", "c": "雀形目", "p": ["M", "F"], "tip": "冬季羽色偏暗，常在树丛和田边小群活动。湾区也容易补，不用专程。", "mac": "https://media.ebird.org/catalog?taxonCode=amegfi&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Goldfinch%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Goldfinch"}, {"n": "Lincoln’s Sparrow", "f": 14.53, "t": "B", "c": "雀形目", "p": ["M"], "tip": "胸口有细密的纵纹，整体灰褐。躲在第二观景台周围的灌丛和湿草地里，安静等它出来。", "mac": "https://media.ebird.org/catalog?taxonCode=linspa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Lincoln%27s%20Sparrow%20bird", "aab": "https://www.allaboutbirds.org/guide/Lincolns_Sparrow"}, {"n": "Ring-necked Duck", "f": 8.88, "t": "B", "c": "雁鸭", "p": ["S", "M"], "tip": "黑背，嘴上有一道白环。San Luis NWR 水禽路线的池塘较有机会。", "mac": "https://media.ebird.org/catalog?taxonCode=rinduc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ring-necked%20Duck%20bird", "aab": "https://www.allaboutbirds.org/guide/Ring-necked_Duck"}, {"n": "Tundra Swan", "f": 7.42, "t": "B", "c": "雁鸭", "p": ["S", "M"], "tip": "12 月才开始出现，数量不多。主要在 San Luis NWR 的 Sousa Marsh，Merced 偶尔也有。", "mac": "https://media.ebird.org/catalog?taxonCode=tunswa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Tundra%20Swan%20bird", "aab": "https://www.allaboutbirds.org/guide/Tundra_Swan"}, {"n": "Blue-winged Teal", "f": 7.02, "t": "B", "c": "雁鸭", "p": ["S", "M"], "tip": "混在浅水池塘的鸭群里，雄鸟脸上有白色月牙。冬季偏少，需要仔细筛。", "mac": "https://media.ebird.org/catalog?taxonCode=buwtea&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Blue-winged%20Teal%20bird", "aab": "https://www.allaboutbirds.org/guide/Blue-winged_Teal"}, {"n": "Common Goldeneye", "f": 6.87, "t": "B", "c": "雁鸭", "p": ["S"], "tip": "喜欢较深的水面。San Luis 有机会，Lake Merritt 也是好地点。", "mac": "https://media.ebird.org/catalog?taxonCode=comgol&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Common%20Goldeneye%20bird", "aab": "https://www.allaboutbirds.org/guide/Common_Goldeneye"}, {"n": "Merlin", "f": 6.62, "t": "B", "c": "猛禽", "p": ["M", "S", "F"], "tip": "偶遇的小隼，飞得又快又直。常停在高处的树顶或电线杆上。", "mac": "https://media.ebird.org/catalog?taxonCode=merlin&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Merlin%20bird", "aab": "https://www.allaboutbirds.org/guide/Merlin"}, {"n": "Tricolored Blackbird", "f": 5.86, "t": "B", "c": "雀形目", "p": ["F"], "tip": "冬天成大群出现在农田和牧场。雄鸟肩上的白边很宽，和 Red-winged 的红肩不同。", "mac": "https://media.ebird.org/catalog?taxonCode=tribla&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Tricolored%20Blackbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Tricolored_Blackbird"}, {"n": "Western Cattle-Egret", "f": 5.67, "t": "B", "c": "鹭类", "p": ["F"], "tip": "在牧场牛群脚边找。沿 Sandy Mush Road 一带的牧场看看。", "mac": "https://media.ebird.org/catalog?taxonCode=categr1&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Western%20Cattle-Egret%20bird", "aab": "https://www.allaboutbirds.org/guide/Cattle_Egret"}, {"n": "Horned Lark", "f": 5.52, "t": "B", "c": "雀形目", "p": ["F", "M"], "tip": "在路边裸地、碎石路和休耕地上。黄色的脸，头顶两侧有小“角”。", "mac": "https://media.ebird.org/catalog?taxonCode=horlar&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Horned%20Lark%20bird", "aab": "https://www.allaboutbirds.org/guide/Horned_Lark"}, {"n": "Lark Sparrow", "f": 4.89, "t": "C", "c": "雀形目", "p": ["F"], "tip": "路边灌丛和电线上。脸上有栗色图案，尾巴两侧有白边。冬季偏少。", "mac": "https://media.ebird.org/catalog?taxonCode=larspa&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Lark%20Sparrow%20bird", "aab": "https://www.allaboutbirds.org/guide/Lark_Sparrow"}, {"n": "Vermilion Flycatcher", "f": 4.4, "t": "C", "c": "雀形目", "p": ["O"], "tip": "雄鸟红色很显眼。冬季零星出现，位置不固定，出发前先看 eBird 的近期报告。", "mac": "https://media.ebird.org/catalog?taxonCode=verfly&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Vermilion%20Flycatcher%20bird", "aab": "https://www.allaboutbirds.org/guide/Vermilion_Flycatcher"}, {"n": "Yellow-billed Magpie", "f": 4.36, "t": "C", "c": "雀形目", "p": ["F"], "tip": "中央谷地特有种。沿农田路找橡树和电线，黄色的嘴很好认。", "mac": "https://media.ebird.org/catalog?taxonCode=yebmag&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Yellow-billed%20Magpie%20bird", "aab": "https://www.allaboutbirds.org/guide/Yellow-billed_Magpie"}, {"n": "Sharp-shinned Hawk", "f": 4.17, "t": "C", "c": "猛禽", "p": ["M", "S"], "tip": "偶遇。体型小、尾长而方，常在树林边缘突然窜出。", "mac": "https://media.ebird.org/catalog?taxonCode=shshaw&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Sharp-shinned%20Hawk%20bird", "aab": "https://www.allaboutbirds.org/guide/Sharp-shinned_Hawk"}, {"n": "Ferruginous Hawk", "f": 3.96, "t": "C", "c": "猛禽", "p": ["F", "M"], "tip": "在开阔草地和电线杆上找。下体偏白，腿上有锈色“裤子”，飞起来很醒目。", "mac": "https://media.ebird.org/catalog?taxonCode=ferhaw&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Ferruginous%20Hawk%20bird", "aab": "https://www.allaboutbirds.org/guide/Ferruginous_Hawk"}, {"n": "Common Merganser", "f": 3.94, "t": "C", "c": "雁鸭", "p": ["O"], "tip": "喜欢较大的水面。这一带不稳定，Lake Merritt 更有机会。", "mac": "https://media.ebird.org/catalog?taxonCode=commer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Common%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Common_Merganser"}, {"n": "Wood Duck", "f": 3.85, "t": "C", "c": "雁鸭", "p": ["S"], "tip": "在有树的水塘边。San Luis NWR 较有机会，雄鸟色彩非常鲜艳。", "mac": "https://media.ebird.org/catalog?taxonCode=wooduc&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Wood%20Duck%20bird", "aab": "https://www.allaboutbirds.org/guide/Wood_Duck"}, {"n": "Phainopepla", "f": 3.13, "t": "C", "c": "雀形目", "p": ["O"], "tip": "黑亮的冠羽很特别。更像山麓灌丛里的鸟，不是保护区的目标，作为偶遇备选。", "mac": "https://media.ebird.org/catalog?taxonCode=phaino&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Phainopepla%20bird", "aab": "https://www.allaboutbirds.org/guide/Phainopepla"}, {"n": "Golden Eagle", "f": 3.03, "t": "C", "c": "猛禽", "p": ["M", "F"], "tip": "在开阔草地上空盘旋。比较少见，运气成分很大。", "mac": "https://media.ebird.org/catalog?taxonCode=goleag&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Golden%20Eagle%20bird", "aab": "https://www.allaboutbirds.org/guide/Golden_Eagle"}, {"n": "Cedar Waxwing", "f": 2.86, "t": "C", "c": "雀形目", "p": ["O"], "tip": "在果树和灌木上成群活动。湾区也容易补，不用专程。", "mac": "https://media.ebird.org/catalog?taxonCode=cedwax&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Cedar%20Waxwing%20bird", "aab": "https://www.allaboutbirds.org/guide/Cedar_Waxwing"}, {"n": "American Bittern", "f": 2.52, "t": "C", "c": "鹭类", "p": ["M", "S"], "tip": "躲在芦苇丛里，常静止不动。入口观景台一带耐心等。", "mac": "https://media.ebird.org/catalog?taxonCode=amebit&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Bittern%20bird", "aab": "https://www.allaboutbirds.org/guide/American_Bittern"}, {"n": "Prairie Falcon", "f": 2.43, "t": "C", "c": "猛禽", "p": ["F", "M"], "tip": "在开阔草地和电线杆上找。浅褐色，飞起来翼下腋部有黑色斑块。", "mac": "https://media.ebird.org/catalog?taxonCode=prafal&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Prairie%20Falcon%20bird", "aab": "https://www.allaboutbirds.org/guide/Prairie_Falcon"}, {"n": "Redhead", "f": 2.26, "t": "C", "c": "雁鸭", "p": ["S"], "tip": "在较深的水塘里，和其他潜鸭混群。雄鸟头红色，嘴蓝灰。", "mac": "https://media.ebird.org/catalog?taxonCode=redhea&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Redhead%20bird", "aab": "https://www.allaboutbirds.org/guide/Redhead"}, {"n": "American Barn Owl", "f": 2.01, "t": "C", "c": "鸮类", "p": ["O"], "tip": "夜行。通常要特意傍晚蹲点，不作为这一行的目标。", "mac": "https://media.ebird.org/catalog?taxonCode=brnowl&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=American%20Barn%20Owl%20bird", "aab": "https://www.allaboutbirds.org/guide/Barn_Owl"}, {"n": "Rock Wren", "f": 1.93, "t": "C", "c": "雀形目", "p": ["O"], "tip": "住在岩石坡上，不是保护区的目标，作为偶遇备选。", "mac": "https://media.ebird.org/catalog?taxonCode=rocwre&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Rock%20Wren%20bird", "aab": "https://www.allaboutbirds.org/guide/Rock_Wren"}, {"n": "Red-breasted Sapsucker", "f": 1.59, "t": "C", "c": "啄木鸟", "p": ["O"], "tip": "橡树林里偶尔出现，作为偶遇备选。", "mac": "https://media.ebird.org/catalog?taxonCode=rebsap&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Red-breasted%20Sapsucker%20bird", "aab": "https://www.allaboutbirds.org/guide/Red-breasted_Sapsucker"}, {"n": "Hooded Merganser", "f": 1.5, "t": "C", "c": "雁鸭", "p": ["S", "O"], "tip": "喜欢小水塘。San Luis 有机会，Lake Merritt 也有机会。", "mac": "https://media.ebird.org/catalog?taxonCode=hoomer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Hooded%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Hooded_Merganser"}, {"n": "Green Heron", "f": 1.37, "t": "C", "c": "鹭类", "p": ["S"], "tip": "在水边植被里，常静止不动。San Luis NWR 的水塘边找找。", "mac": "https://media.ebird.org/catalog?taxonCode=grnher&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Green%20Heron%20bird", "aab": "https://www.allaboutbirds.org/guide/Green_Heron"}, {"n": "Red-breasted Merganser", "f": 1.14, "t": "C", "c": "雁鸭", "p": ["O"], "tip": "海岸和河口更稳，建议在 Half Moon Bay 补。", "mac": "https://media.ebird.org/catalog?taxonCode=rebmer&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Red-breasted%20Merganser%20bird", "aab": "https://www.allaboutbirds.org/guide/Red-breasted_Merganser"}, {"n": "Yellow-headed Blackbird", "f": 1.08, "t": "C", "c": "雀形目", "p": ["F"], "tip": "常混在黑鹂大群里，黄色的头很显眼。在农田里扫大群。", "mac": "https://media.ebird.org/catalog?taxonCode=yehbla&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Yellow-headed%20Blackbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Yellow-headed_Blackbird"}, {"n": "Cassin’s Kingbird", "f": 1.06, "t": "C", "c": "雀形目", "p": ["O"], "tip": "冬季罕见，作为碰运气的备选。", "mac": "https://media.ebird.org/catalog?taxonCode=caskin&mediaType=photo&sort=rating_rank_desc", "g": "https://www.google.com/search?tbm=isch&q=Cassin%27s%20Kingbird%20bird", "aab": "https://www.allaboutbirds.org/guide/Cassins_Kingbird"}];
+var BASE = 169;
+var LS_KEY = "merced-seen-v1";
+
+var PLACES = {
+  M: { label: "Merced NWR", note: "Sandy Mush Road 入口：观景台、5 英里自驾路线、第二观景台。" },
+  S: { label: "San Luis NWR", note: "Los Banos 北边：水禽路线、tule elk 路线、Sousa Marsh。" },
+  F: { label: "农田路", note: "Sandy Mush Rd、Henry Miller Rd 一带的公共道路。不要进入私人土地。" },
+  O: { label: "其他地点", note: "保护区里不容易遇到，湾区或海岸更好补的鸟。" }
+};
+var TIERS = {
+  A: { label: "稳拿", pips: 3 },
+  B: { label: "很可能", pips: 2 },
+  C: { label: "有机会", pips: 1 }
+};
+
+var seen = new Set();
+try {
+  var raw = localStorage.getItem(LS_KEY);
+  if (raw) { JSON.parse(raw).forEach(function (n) { seen.add(n); }); }
+} catch (e) {}
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(Array.from(seen))); } catch (e) {}
+}
+
+var state = { q: "", place: "all", tier: "all", unseen: false, open: null };
+
+function norm(s) { return s.toLowerCase().replace(/[’']/g, ""); }
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+BIRDS.forEach(function (b) {
+  b.hay = norm([b.n, b.c, b.tip, b.p.map(function (k) { return PLACES[k].label; }).join(" ")].join(" "));
+});
+
+function pipsHtml(t) {
+  var n = TIERS[t].pips, h = '<span class="pips" role="img" aria-label="把握：' + TIERS[t].label + '">';
+  for (var i = 0; i < 3; i++) h += '<span class="pip' + (i < n ? " on" : "") + '"></span>';
+  return h + "</span>";
+}
+
+function matches(b) {
+  if (state.place !== "all" && b.p.indexOf(state.place) === -1) return false;
+  if (state.tier !== "all" && b.t !== state.tier) return false;
+  if (state.unseen && seen.has(b.n)) return false;
+  if (state.q) {
+    var toks = norm(state.q).split(/\s+/).filter(Boolean);
+    for (var i = 0; i < toks.length; i++) if (b.hay.indexOf(toks[i]) === -1) return false;
+  }
+  return true;
+}
+
+function renderChips() {
+  var total = BIRDS.length;
+  var ph = '<button type="button" class="chip" data-place="all" aria-pressed="' + (state.place === "all") + '">全部 <span class="n">' + total + "</span></button>";
+  ["M", "S", "F", "O"].forEach(function (k) {
+    var n = BIRDS.filter(function (b) { return b.p.indexOf(k) !== -1; }).length;
+    ph += '<button type="button" class="chip" data-place="' + k + '" aria-pressed="' + (state.place === k) + '">' + esc(PLACES[k].label) + ' <span class="n">' + n + "</span></button>";
+  });
+  document.getElementById("chips-place").innerHTML = ph;
+
+  var th = '<button type="button" class="chip" data-tier="all" aria-pressed="' + (state.tier === "all") + '">全部把握</button>';
+  ["A", "B", "C"].forEach(function (k) {
+    var n = BIRDS.filter(function (b) { return b.t === k; }).length;
+    th += '<button type="button" class="chip" data-tier="' + k + '" aria-pressed="' + (state.tier === k) + '">' + pipsHtml(k) + TIERS[k].label + ' <span class="n">' + n + "</span></button>";
+  });
+  th += '<button type="button" class="chip" data-unseen="1" aria-pressed="' + state.unseen + '">只看没见过的</button>';
+  document.getElementById("chips-tier").innerHTML = th;
+
+  document.getElementById("place-note").textContent = state.place === "all" ? "" : PLACES[state.place].note;
+}
+
+function renderProgress() {
+  var n = BIRDS.filter(function (b) { return seen.has(b.n); }).length;
+  document.getElementById("p-seen").innerHTML = "已见 <b>" + n + "</b> / " + BIRDS.length;
+  document.getElementById("p-life").textContent = "life list " + BASE + " → " + (BASE + n);
+  document.getElementById("p-fill").style.width = (BIRDS.length ? (n / BIRDS.length) * 100 : 0) + "%";
+}
+
+function renderList() {
+  var list = BIRDS.filter(matches);
+  var el = document.getElementById("list");
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">没有找到匹配的鸟。试试英文名的一部分，或者清除筛选。<br><button type="button" class="btn" data-clear="1">清除搜索和筛选</button></div>';
+    return;
+  }
+  var h = "";
+  list.forEach(function (b, idx) {
+    var isSeen = seen.has(b.n), isOpen = state.open === b.n, id = "m" + BIRDS.indexOf(b);
+    var where = b.p.map(function (k) { return PLACES[k].label; }).join("、");
+    h += '<article class="row' + (isSeen ? " seen" : "") + '">' +
+      '<div class="head">' +
+      '<button type="button" class="tick" data-tick="' + esc(b.n) + '" aria-pressed="' + isSeen + '" aria-label="已见 ' + esc(b.n) + '">' +
+      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<button type="button" class="main" data-open="' + esc(b.n) + '" aria-expanded="' + isOpen + '" aria-controls="' + id + '">' +
+      '<span class="nm">' + esc(b.n) + "</span>" +
+      '<span class="meta">' + esc(b.c) + "，" + esc(where) + "</span>" +
+      '<span class="rate">' + pipsHtml(b.t) + "<span>" + b.f.toFixed(1) + "%</span></span>" +
+      "</button></div>" +
+      '<div class="more" id="' + id + '"' + (isOpen ? "" : " hidden") + ">" +
+      "<p>" + esc(b.tip) + "</p>" +
+      '<p class="where">去哪找：' + esc(where) + "</p>" +
+      '<div class="links">' +
+      '<a href="' + esc(b.mac) + '" target="_blank" rel="noopener noreferrer">eBird 照片</a>' +
+      '<a href="' + esc(b.g) + '" target="_blank" rel="noopener noreferrer">Google 图片</a>' +
+      '<a href="' + esc(b.aab) + '" target="_blank" rel="noopener noreferrer">All About Birds</a>' +
+      "</div></div></article>";
+  });
+  el.innerHTML = h;
+}
+
+function renderAll() { renderChips(); renderProgress(); renderList(); }
+
+document.getElementById("sub").textContent = "你的 life list 里还没有、冬天在 Merced 一带有机会遇到的 " + BIRDS.length + " 种鸟。12/21–22 出发前后用。";
+
+document.getElementById("q").addEventListener("input", function (e) {
+  state.q = e.target.value;
+  renderList();
+});
+
+document.addEventListener("click", function (e) {
+  var t = e.target.closest("button");
+  if (!t) return;
+  if (t.hasAttribute("data-tick")) {
+    var n = t.getAttribute("data-tick");
+    if (seen.has(n)) seen.delete(n); else seen.add(n);
+    save(); renderProgress(); renderList();
+  } else if (t.hasAttribute("data-open")) {
+    var o = t.getAttribute("data-open");
+    state.open = state.open === o ? null : o;
+    renderList();
+  } else if (t.hasAttribute("data-place")) {
+    state.place = t.getAttribute("data-place"); state.open = null; renderChips(); renderList();
+  } else if (t.hasAttribute("data-tier")) {
+    state.tier = t.getAttribute("data-tier"); state.open = null; renderChips(); renderList();
+  } else if (t.hasAttribute("data-unseen")) {
+    state.unseen = !state.unseen; renderChips(); renderList();
+  } else if (t.hasAttribute("data-clear")) {
+    state.q = ""; state.place = "all"; state.tier = "all"; state.unseen = false; state.open = null;
+    document.getElementById("q").value = "";
+    renderAll();
+  }
+});
+
+var resetBtn = document.getElementById("reset"), resetTimer = null;
+resetBtn.addEventListener("click", function () {
+  if (resetBtn.getAttribute("data-armed") === "1") {
+    seen.clear(); save();
+    resetBtn.removeAttribute("data-armed");
+    resetBtn.textContent = "清除全部已见记录";
+    clearTimeout(resetTimer);
+    renderProgress(); renderList();
+  } else {
+    resetBtn.setAttribute("data-armed", "1");
+    resetBtn.textContent = "再点一次确认清除";
+    resetTimer = setTimeout(function () {
+      resetBtn.removeAttribute("data-armed");
+      resetBtn.textContent = "清除全部已见记录";
+    }, 4000);
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>
